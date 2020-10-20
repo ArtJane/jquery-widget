@@ -87,7 +87,7 @@ $data = $item.data          当前模板渲染数据
 +
 $index = $item.index        使用Array数据时，获取当前模板数据在Array中的索引
 +
-$parent = $item.parenat     子板板访问父模板对象
+$parent = $item.parenat     子模板访问父模板对象
 +
 $widget = $item.widget      模板所在的widget组件对象
 +
