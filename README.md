@@ -66,7 +66,7 @@ elem: 数据类型 Dom或jQuery对象
 +
 {each value}                遍历开始    
 {each(i, item) value}       自定义单项变量，默认 ($key, $value)
-{/each}                     遍历开始
+{/each}                     遍历结束
 +
 {tmpl name}                 引入子模板
 {tmpl(data) name}           自定义子模板数据，默认传父模板楼据
