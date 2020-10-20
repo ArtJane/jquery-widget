@@ -152,7 +152,7 @@ require(["jquery", "widget"], function($){
             `,
                 
             listItem: `
-                <li><a href="{href}">{$data.text + " > "}</a></li>
+                <li><a href="{href}">{$index}. {$data.text + " > "}</a></li>
             `,
             
             footer: `
