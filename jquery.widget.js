@@ -8,12 +8,8 @@
 
 (function (factory) {
     if (typeof define === "function" && define.amd) {
-
-        // AMD. Register as an anonymous module.
         define(["jquery"], factory);
     } else {
-
-        // Browser globals
         factory(jQuery);
     }
 }(function ($) {
@@ -26,14 +22,10 @@
             var events, elem, i;
             for (i = 0; (elem = elems[i]) != null; i++) {
                 try {
-
-                    // Only trigger remove when necessary to save time
                     events = $._data(elem, "events");
                     if (events && events.remove) {
                         $(elem).triggerHandler("remove");
                     }
-
-                    // Http://bugs.jquery.com/ticket/8235
                 } catch (e) {
                 }
             }
@@ -43,9 +35,6 @@
 
     $.widget = function (name, base, prototype) {
         var existingConstructor, constructor, basePrototype;
-
-        // ProxiedPrototype allows the provided prototype to remain unmodified
-        // so that it can be used as a mixin for multiple widgets (#8876)
         var proxiedPrototype = {};
 
         var namespace = name.split(".")[0];
@@ -61,7 +50,6 @@
             prototype = $.extend.apply(null, [{}].concat(prototype));
         }
 
-        // Create selector for plugin
         $.expr[":"][fullName.toLowerCase()] = function (elem) {
             return !!$.data(elem, fullName);
         };
@@ -69,38 +57,22 @@
         $[namespace] = $[namespace] || {};
         existingConstructor = $[namespace][name];
         constructor = $[namespace][name] = function (options, element) {
-
-            // Allow instantiation without "new" keyword
             if (!this._createWidget) {
                 return new constructor(options, element);
             }
-
-            // Allow instantiation without initializing for simple inheritance
-            // must use "new" keyword (the code above always passes args)
             if (arguments.length) {
                 this._createWidget(options, element);
             }
         };
 
-        // Extend with the existing constructor to carry over any static properties
         $.extend(constructor, existingConstructor, {
             version: prototype.version,
-
-            // Copy the object used to create the prototype in case we need to
-            // redefine the widget later
             _proto: $.extend({}, prototype),
-
-            // Track widgets that inherit from this widget in case this widget is
-            // redefined after a widget inherits from it
             _childConstructors: [],
             _parentConstructor: base
         });
 
         basePrototype = new base();
-
-        // We need to make the options hash a property directly on the new instance
-        // otherwise we'll modify the options hash on the prototype that we're
-        // inheriting from
         basePrototype.options = $.widget.extend({}, basePrototype.options);
         $.each(prototype, function (prop, value) {
             if (!$.isFunction(value)) {
@@ -134,10 +106,6 @@
             })();
         });
         constructor.prototype = $.widget.extend(basePrototype, {
-
-            // TODO: remove support for widgetEventPrefix
-            // always use the name + a colon as the prefix, e.g., draggable:start
-            // don't prefix for widgets that aren't DOM-based
             widgetEventPrefix: existingConstructor ? (basePrototype.widgetEventPrefix || name) : name
         }, proxiedPrototype, {
             constructor: constructor,
@@ -146,22 +114,12 @@
             widgetFullName: fullName
         });
 
-        // If this widget is being redefined then we need to find all widgets that
-        // are inheriting from it and redefine all of them so that they inherit from
-        // the new version of this widget. We're essentially trying to replace one
-        // level in the prototype chain.
         if (existingConstructor) {
             $.each(existingConstructor._childConstructors, function (i, child) {
                 var childPrototype = child.prototype;
-
-                // Redefine the child widget using the same prototype that was
-                // originally used, but inherit from the new version of the base
                 $.widget(childPrototype.namespace + "." + childPrototype.widgetName, constructor,
                     child._proto);
             });
-
-            // Remove the list of existing child constructors from the old constructor
-            // so the old child constructors can be garbage collected
             delete existingConstructor._childConstructors;
         } else {
             base._childConstructors.push(constructor);
@@ -184,15 +142,10 @@
                 value = input[inputIndex][key];
                 if (input[inputIndex].hasOwnProperty(key) && value !== undefined) {
 
-                    // Clone objects
                     if ($.isPlainObject(value)) {
                         target[key] = $.isPlainObject(target[key]) ?
                             $.widget.extend({}, target[key], value) :
-
-                            // Don't extend strings, arrays, etc. with objects
                             $.widget.extend({}, value);
-
-                        // Copy everything else by reference
                     } else {
                         target[key] = value;
                     }
@@ -210,9 +163,6 @@
             var returnValue = this;
 
             if (isMethodCall) {
-
-                // If this is an empty collection, we need to have the instance method
-                // return undefined instead of the jQuery instance
                 if (!this.length && options === "instance") {
                     returnValue = undefined;
                 } else {
@@ -248,7 +198,6 @@
                 }
             } else {
 
-                // Allow multiple hashes to be passed on init
                 if (args.length) {
                     options = $.widget.extend.apply(null, [options].concat(args));
                 }
@@ -270,7 +219,7 @@
         };
     };
 
-    $.Widget = function ( /* options, element */) {};
+    $.Widget = function () {};
     $.Widget._childConstructors = [];
 
     $.Widget.prototype = {
@@ -282,7 +231,6 @@
             classes: {},
             disabled: false,
 
-            // Callbacks
             create: null
         },
 
@@ -307,11 +255,7 @@
                     }
                 });
                 this.document = $(element.style ?
-
-                    // Element within the document
                     element.ownerDocument :
-
-                    // Element is window or document
                     element.document || element);
                 this.window = $(this.document[0].defaultView || this.document[0].parentWindow);
             }
@@ -353,8 +297,6 @@
                 that._removeClass(value, key);
             });
 
-            // We can probably remove the unbind calls in 2.0
-            // all event bindings should go through this._on()
             this.element
                 .off(this.eventNamespace)
                 .removeData(this.widgetFullName);
@@ -362,7 +304,6 @@
                 .off(this.eventNamespace)
                 .removeAttr("aria-disabled");
 
-            // Clean up events and states
             this.bindings.off(this.eventNamespace);
         },
 
@@ -379,14 +320,10 @@
             var i;
 
             if (arguments.length === 0) {
-
-                // Don't return a reference to the internal hash
                 return $.widget.extend({}, this.options);
             }
 
             if (typeof key === "string") {
-
-                // Handle nested keys, e.g., "foo.bar" => { foo: { bar: ___ } }
                 options = {};
                 parts = key.split(".");
                 key = parts.shift();
@@ -449,17 +386,9 @@
                     continue;
                 }
 
-                // We are doing this to create a new jQuery object because the _removeClass() call
-                // on the next line is going to destroy the reference to the current elements being
-                // tracked. We need to save a copy of this collection so that we can add the new classes
-                // below.
                 elements = $(currentElements.get());
                 this._removeClass(currentElements, classKey);
 
-                // We don't use _addClass() here, because that uses this.options.classes
-                // for generating the string of classes. We want to use the value passed in from
-                // _setOption(), this is the new value of the classes option which was passed to
-                // _setOption(). We pass this value directly to _classes().
                 elements.addClass(this._classes({
                     element: elements,
                     keys: classKey,
@@ -472,7 +401,6 @@
         _setOptionDisabled: function (value) {
             this._toggleClass(this.widget(), this.widgetFullName + "-disabled", null, !!value);
 
-            // If the widget is becoming disabled, then nothing is interactive
             if (value) {
                 this._removeClass(this.hoverable, null, "ui-state-hover");
                 this._removeClass(this.focusable, null, "ui-state-focus");
@@ -561,14 +489,12 @@
             var delegateElement;
             var instance = this;
 
-            // No suppressDisabledCheck flag, shuffle arguments
             if (typeof suppressDisabledCheck !== "boolean") {
                 handlers = element;
                 element = suppressDisabledCheck;
                 suppressDisabledCheck = false;
             }
 
-            // No element argument, shuffle and use this.element
             if (!handlers) {
                 handlers = element;
                 element = this.element;
@@ -580,10 +506,6 @@
 
             $.each(handlers, function (event, handler) {
                 function handlerProxy() {
-
-                    // Allow widgets to customize the disabled handling
-                    // - disabled as an array instead of boolean
-                    // - disabled class as method for disabling individual parts
                     if (!suppressDisabledCheck &&
                         (instance.options.disabled === true ||
                             $(this).hasClass("ui-state-disabled"))) {
@@ -593,7 +515,6 @@
                         .apply(instance, arguments);
                 }
 
-                // Copy the guid so direct unbinding works
                 if (typeof handler !== "string") {
                     handlerProxy.guid = handler.guid =
                         handler.guid || handlerProxy.guid || $.guid++;
@@ -616,7 +537,6 @@
                 this.eventNamespace;
             element.off(eventName).off(eventName);
 
-            // Clear the stack to avoid memory leaks (#10056)
             this.bindings = $(this.bindings.not(element).get());
             this.focusable = $(this.focusable.not(element).get());
             this.hoverable = $(this.hoverable.not(element).get());
@@ -666,11 +586,8 @@
                 type :
                 this.widgetEventPrefix + type).toLowerCase();
 
-            // The original event may come from any element
-            // so we need to reset the target on the new event
             event.target = this.element[0];
 
-            // Copy original event properties over to the new event
             orig = event.originalEvent;
             if (orig) {
                 for (prop in orig) {
@@ -728,7 +645,6 @@
         };
     });
 
-
     // Template
 
     $.expr[":"]["tmplkey"] = function(elem) {
@@ -763,30 +679,28 @@
                 `var $template=this,$widget=$item.widget,$options=$widget.options,$parent=$item.parent,$data=$item.data,$index=$item.index,$=$item.jQuery,__=[];with($data){__.push('${
                     template
                         .replace(/'/g, "\"")
-                        .replace(/\{\{html(.+?)\}\}/g, function(all, value){
+                        .replace(/\{html(.+?)\}/g, function(all, value){
                             return `');if(${that._notnull(value)}){__.push(${value});}__.push('`;
                         })
-                        .replace(/\{\{if(.*?)\}\}/g, function(all, value){
+                        .replace(/\{if(.*?)\}/g, function(all, value){
                             return `');if(${that._boolean(value)}){__.push('`;
                         })
-                        .replace(/\{\{else(.*?)\}\}/g, function(all, value){
+                        .replace(/\{else(.*?)\}/g, function(all, value){
                             return `');}else if(${that._boolean(value)}){__.push('`;
                         })
-                        .replace(/\{\{\/if\}\}/g, function(all){
+                        .replace(/\{\/if\}/g, function(all){
                             return `');}__.push('`;
                         })
-                        .replace(/\{\{each(?:\s*\((.+?)\))?(.+?)\}\}/g, function(all, tagArgs, value){
-                            return `');if(${that._object(value)}){$.each(${value},function(${tagArgs ? tagArgs : "$index,$value"}){with(arguments[1]){__.push('`;
+                        .replace(/\{each(?:\s*\((.+?)\))?(.+?)\}/g, function(all, tagArgs, value){
+                            return `');if(${that._object(value)}){$.each(${value},function(${tagArgs ? tagArgs : "$key,$value"}){with(arguments[1]){__.push('`;
                         })
-                        .replace(/\{\{\/each\}\}/g, function(all){
+                        .replace(/\{\/each\}/g, function(all){
                             return `');}});}__.push('`;
                         })
-                        .replace(/\{\{tmpl(?:\s*\((.+?)\))?(.+?)\}\}/g, function(all, tagArgs, value){
+                        .replace(/\{tmpl(?:\s*\((.+?)\))?(.+?)\}/g, function(all, tagArgs, value){
                             return `');if(${that._notnull(value)}){__=__.concat($template.tmpl($item.namespace,${value},${tagArgs ? tagArgs : "$data"},$item,$widget));}__.push('`;
-                        })
-                        .replace(/\$\{(.+?)\}/g, "{{$1}}")
-                        .replace(/\{\{=(.+?)\}\}/g, "{{$1}}")
-                        .replace(/\{\{(.+?)\}\}/g, function (all, value) {
+                        })                        
+                        .replace(/\{(.+?)\}/g, function (all, value) {
                             return `');if(${that._notnull(value)}){__.push($template.encode(${value}));}__.push('`;
                         })
                 }');}return __;`
@@ -875,12 +789,12 @@
         },
 
         _notnull: function(value){
-            return `$data&&(${value})!=null`;
+            return `typeof(${value})!=="undefined"&&(${value})!=null`;
         },
 
         _boolean: function(value){
             if(value){
-                return  `$data&&(${value})`;
+                return  `typeof(${value})!=="undefined"&&(${value})`;
             }else{
                 return "true";
             }
@@ -930,7 +844,7 @@
             var level = 0;
             var tmplkey;
             return html
-                .replace(/<(\/)?(\w+)(.*?)(\/)>/g, function(all, prevSlash, tag, props, nextSlash){
+                .replace(/<(\/)?(\w+)(.*?)(\/)?>/g, function(all, prevSlash, tag, props, nextSlash){
                     if(prevSlash){
                         level--;
                         return `</${tag}>`;
