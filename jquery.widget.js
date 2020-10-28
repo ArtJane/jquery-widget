@@ -716,7 +716,7 @@
                 return parent ? "" : $();
             }
 
-            data = data || parent.data;
+            data = data || (parent && parent.data);
 
             if($.isArray(data)){
                 for(i = 0; i < data.length; i++){
