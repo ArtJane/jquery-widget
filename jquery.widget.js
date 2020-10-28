@@ -716,7 +716,7 @@
                 return parent ? "" : $();
             }
 
-            data = data || (parent && parent.data);
+            data = data || parent.data;
 
             if($.isArray(data)){
                 for(i = 0; i < data.length; i++){
@@ -903,7 +903,7 @@
         },
 
         _tmpl: function(name, data){
-            return $.template.tmpl(this.widgetFullName, name, data, null, this);
+            return $.template.tmpl(this.widgetFullName, name, data || this.options, null, this);
         },
 
         _tmplItem: function(elem){
