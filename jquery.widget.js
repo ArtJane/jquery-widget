@@ -679,28 +679,28 @@
                 `var $template=this,$widget=$item.widget,$options=$widget.options,$parent=$item.parent,$data=$item.data,$index=$item.index,$=$item.jQuery,__=[];with($data){__.push('${
                     template
                         .replace(/'/g, "\"")
-                        .replace(/\{html(.+?)\}/g, function(all, value){
+                        .replace(/\{\{html(.+?)\}\}/g, function(all, value){
                             return `');if(${that._notnull(value)}){__.push(${value});}__.push('`;
                         })
-                        .replace(/\{if(.*?)\}/g, function(all, value){
+                        .replace(/\{\{if(.*?)\}\}/g, function(all, value){
                             return `');if(${that._boolean(value)}){__.push('`;
                         })
-                        .replace(/\{else(.*?)\}/g, function(all, value){
+                        .replace(/\{\{else(.*?)\}\}/g, function(all, value){
                             return `');}else if(${that._boolean(value)}){__.push('`;
                         })
-                        .replace(/\{\/if\}/g, function(all){
+                        .replace(/\{\{\/if\}\}/g, function(all){
                             return `');}__.push('`;
                         })
-                        .replace(/\{each(?:\s*\((.+?)\))?(.+?)\}/g, function(all, tagArgs, value){
+                        .replace(/\{\{each(?:\s*\((.+?)\))?(.+?)\}\}/g, function(all, tagArgs, value){
                             return `');if(${that._object(value)}){$.each(${value},function(${tagArgs ? tagArgs : "$key,$value"}){with(arguments[1]){__.push('`;
                         })
-                        .replace(/\{\/each\}/g, function(all){
+                        .replace(/\{\{\/each\}\}/g, function(all){
                             return `');}});}__.push('`;
                         })
-                        .replace(/\{tmpl(?:\s*\((.+?)\))?(.+?)\}/g, function(all, tagArgs, value){
+                        .replace(/\{\{tmpl(?:\s*\((.+?)\))?(.+?)\}\}/g, function(all, tagArgs, value){
                             return `');if(${that._notnull(value)}){__=__.concat($template.tmpl($item.namespace,${value},${tagArgs ? tagArgs : "$data"},$item,$widget));}__.push('`;
-                        })                        
-                        .replace(/\{(.+?)\}/g, function (all, value) {
+                        })
+                        .replace(/\{\{(.+?)\}\}/g, function (all, value) {
                             return `');if(${that._notnull(value)}){__.push($template.encode(${value}));}__.push('`;
                         })
                 }');}return __;`
