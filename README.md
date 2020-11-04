@@ -5,8 +5,8 @@
 
 <!--标签引入-->
 
-<script src="./dist/jquery.js"></script>
-<script src="./dist/jquery.widget.js"></script>
+<script src="path/jquery.js"></script>
+<script src="path/jquery.widget.js"></script>
 ````
 ```javascript
 
@@ -55,21 +55,21 @@ elem: 数据类型 Dom或jQuery对象
 @模板语法
 
 +
-{value}                     文本值，html会被转码
+{{value}}                     文本值，html会被转码
 +
-{html value}                html值
+{{html value}}                html值
 +
-{if value}                  条件语句开始
-{else value}                带条件分支
-{else}                      不带条件分支
-{/if}                       条件语句结束
+{{if value}}                  条件语句开始
+{{else value}}                带条件分支
+{{else}}                      不带条件分支
+{{/if}}                       条件语句结束
 +
-{each value}                遍历开始    
-{each(i, item) value}       自定义单项变量，默认 ($key, $value)
-{/each}                     遍历结束
+{{each value}}                遍历开始    
+{{each(i, item) value}}       自定义单项变量，默认 ($key, $value)
+{{/each}}                     遍历结束
 +
-{tmpl name}                 引入子模板
-{tmpl(data) name}           自定义子模板数据，默认传父模板楼据
+{{tmpl name}}                 引入子模板
+{{tmpl(data) name}}           自定义子模板数据，默认传父模板楼据
 Array类型数据则每次传入单项值，循环渲染模板
 +
 
@@ -81,9 +81,9 @@ $template                   整个模板集合对像
 $item                       当前模板对象
 +
 $data = $item.data          当前模板渲染数据  
-模板内单纯传 key 值可省略 $data， 如 {$data.key} 可简写为 {key}, {if $data.key} 可简写为 {if key}
+模板内单纯传 key 值可省略 $data， 如 {{$data.key}} 可简写为 {{key}}, {{if $data.key}} 可简写为 {{if key}}
 表达式则必须带上 $data 以免产生 undefined 错误,
-如 {key+1} 最好写为 {$data.key+1}, {if key===1} 最好写为 {if $data.key===1}
+如 {{key+1}} 最好写为 {{$data.key+1}}, {{if key===1}} 最好写为 {{if $data.key===1}}
 +
 $index = $item.index        使用Array数据时，获取当前模板数据在Array中的索引
 +
@@ -94,7 +94,7 @@ $widget = $item.widget      模板所在的widget组件对象
 $options = $item.widget.options
 widget组件对象的options属性，通常组件的各种数据都存在这里
 +
-$key, $value                当模板内有{each}{/each}遍历时，默认生成的单项 key-value 变量
+$key, $value                当模板内有{{each}}{{/each}}遍历时，默认生成的单项 key-value 变量
 +
 */
 ```
@@ -126,40 +126,40 @@ require(["jquery", "widget"], function($){
             main: `
                 <h6>这是一张卡片</h6>
                 <div class="card">
-                    {tmpl "header"}
-                    {tmpl "body"}
+                    {{tmpl "header"}}
+                    {{tmpl "body"}}
                     <ul class="card-list">
-                        {if $data.list&&$data.list.length}
-                            {tmpl(list) "listItem"}
-                        {/if}
+                        {{if $data.list&&$data.list.length}}
+                            {{tmpl(list) "listItem"}}
+                        {{/if}}
                     </ul>
-                    {if desc}
-                        {tmpl "footer"}
-                    {/if}                    
+                    {{if desc}}
+                        {{tmpl "footer"}}
+                    {{/if}}                    
                 </div>
             `,
             
             header: `
                 <div class="card-header">
-                    {title}
+                    {{title}}
                 </div>   
             `,
             
             body: `
                 <div class="card-body">
-                    {html content}
+                    {{html content}}
                 </div>   
             `,
                 
             listItem: `
-                <li><a href="{href}">{$index}. {$data.text + " > "}</a></li>
+                <li><a href="{{href}}">{{$index}}. {{$data.text + " > "}}</a></li>
             `,
             
             footer: `
                 <div class="card-footer">
-                    {each desc}
-                        <span class={$key}>{$value}</span>
-                    {/each}
+                    {{each desc}}
+                        <span class={{$key}}>{{$value}}</span>
+                    {{/each}}
                 </div> 
             `
         },        
