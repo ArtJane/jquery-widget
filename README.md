@@ -35,10 +35,11 @@ templates
 @方法
 
 +
-_tmpl(name, data);
+_tmpl(name, data, isHtml);
 +
 name: 数据类型 String，模板名称
-data: 楼据类型 Any, 模板数据
+data: 数据类型 Any, 模板数据
+isHtml: 数据类型　boolean, 为true则返回模板的html字符串
 使用data数据渲染名称为name的模板，返回一个jQuery对象
 
 +
@@ -102,7 +103,7 @@ $key, $value                当模板内有{{each}}{{/each}}遍历时，默认�
 ```javascript
 require(["jquery", "widget"], function($){ 
  
-    $.widget("wdt.demo", {
+    $.widget("wgt.demo", {
 
         options: {        	
             title: "我是标题",
