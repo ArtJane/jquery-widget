@@ -838,10 +838,10 @@
 
     _trimHtml: function (html){
         return html            
-            .replace(/\n/g, " ")
+            .replace(/\n/g, "")
             .replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "")
-            .replace(/>[\s\uFEFF\xA0]+/g, "> ")
-            .replace(/[\s\uFEFF\xA0]+</g, " <");
+            .replace(/>[\s\uFEFF\xA0]+/g, ">")
+            .replace(/[\s\uFEFF\xA0]+</g, "<");
     },
 
     _parseHtml: function(html, item){
