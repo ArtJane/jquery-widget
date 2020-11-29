@@ -6,9 +6,6 @@
   "keywords": ["jquery", "template", "wedgit", "bootstrap"],
   "author": "jian2jun",
   "license": "ISC",
-  "devDependencies": {
-    "rollup": "^1.0.2"
-  },
   "dependencies": {
     "jquery": "^3.5.1"
   }
